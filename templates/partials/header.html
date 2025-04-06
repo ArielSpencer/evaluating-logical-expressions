@@ -1,0 +1,19 @@
+<header class="app-header">
+    <div class="app-header-content">
+        <div class="header-brand">
+            <a href="{{ url_for('index') }}" class="app-logo">
+                <h1 class="app-title">ExprEval</h1>
+                <p class="app-subtitle">{% block header_subtitle %}Evaluate expressions easily{% endblock %}</p>
+            </a>
+        </div>
+        <a href="https://arielspencer.com.br" target="_blank" class="user-profile-link">
+            <div class="user-profile">
+                <div class="avatar">S</div>
+                <div class="user-info">
+                    <div class="user-name">Spencer</div>
+                    <div class="user-level">Developer</div>
+                </div>
+            </div>
+        </a>
+    </div>
+</header>
