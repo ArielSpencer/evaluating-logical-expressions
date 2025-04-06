@@ -1,0 +1,187 @@
+{% extends "base.html" %} {% block title %}Evaluate Expressions - Expression
+Evaluator{% endblock %} {% block header_subtitle %}Build & evaluate
+expressions{% endblock %} {% block content %}
+<div class="step-indicator">STEP 3 OF 3</div>
+<h2 class="screen-title">Expression Builder</h2>
+
+{% if error %}
+<div class="error-message">{{ error }}</div>
+{% endif %}
+
+<div class="card-container">
+  <div class="card card-full">
+    <form action="{{ url_for('evaluate') }}" method="post" id="evaluate-form">
+      <input
+        type="text"
+        id="expression"
+        name="expression"
+        class="expression-input"
+        placeholder="Use the buttons below"
+        value="{{ current_expression or '' }}"
+        readonly
+      />
+
+      <div
+        class="expression-controls"
+        style="display: flex; justify-content: flex-end; gap: 10px"
+      >
+        <button
+          type="submit"
+          name="action"
+          value="backspace"
+          class="button delete-btn"
+        >
+          <span class="material-symbols-rounded">backspace</span>
+        </button>
+        <button
+          type="submit"
+          name="action"
+          value="clear"
+          class="button delete-btn"
+        >
+          <span class="material-symbols-rounded">delete</span>
+        </button>
+      </div>
+
+      {% if result is defined %}
+      <div class="result-card">
+        <div class="result-title">Result</div>
+        <div class="result-expression">{{ expression }}</div>
+        <div class="result {% if result_class %}{{ result_class }}{% endif %}">
+          {{ result }}
+        </div>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="expression-section">
+      <h4 class="expression-section-title">Variables</h4>
+      <div class="button-grid">
+        {% for name, value in variables.items() %} {% if name == name.upper()
+        and name.startswith('NUM') %}
+        <form action="{{ url_for('evaluate') }}" method="post">
+          <input type="hidden" name="token" value="{{ name }}" />
+          <button
+            type="submit"
+            name="action"
+            value="add_token"
+            class="expr-btn var-btn"
+            title="Value: {{ value }}"
+          >
+            {{ name }}
+          </button>
+        </form>
+        {% endif %} {% endfor %}
+      </div>
+    </div>
+
+    <div class="expression-section">
+      <h4 class="expression-section-title">Numbers</h4>
+      <div class="button-grid">
+        {% for num in ['1','2','3','4','5','6','7','8','9','0','.'] %}
+        <form action="{{ url_for('evaluate') }}" method="post">
+          <input type="hidden" name="token" value="{{ num }}" />
+          <button
+            type="submit"
+            name="action"
+            value="add_token"
+            class="expr-btn num-btn"
+          >
+            {{ num }}
+          </button>
+        </form>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="expression-section">
+      <h4 class="expression-section-title">Operators</h4>
+      <div class="button-grid">
+        {% set ops = [ ('+', 'Addition operator'), ('-', 'Subtraction
+        operator'), ('*', 'Multiplication operator'), ('/', 'Division
+        operator'), ('<', 'Less than comparison'), ('>', 'Greater than
+        comparison'), ('==', 'Equal to comparison'), ('!=', 'Not equal to
+        comparison'), ('<=', 'Less than or equal to'), ('>=', 'Greater than or
+        equal to'), ('(', 'Opening parenthesis'), (')', 'Closing parenthesis') ]
+        %} {% for op, title in ops %}
+        <form action="{{ url_for('evaluate') }}" method="post">
+          <input type="hidden" name="token" value="{{ op }}" />
+          <button
+            type="submit"
+            name="action"
+            value="add_token"
+            class="expr-btn op-btn"
+            title="{{ title }}"
+          >
+            {{ op }}
+          </button>
+        </form>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="expression-section">
+      <h4 class="expression-section-title">Logic</h4>
+      <div class="button-grid">
+        {% for logic in ['and', 'or', 'not'] %}
+        <form action="{{ url_for('evaluate') }}" method="post">
+          <input type="hidden" name="token" value="{{ logic }}" />
+          <button
+            type="submit"
+            name="action"
+            value="add_token"
+            class="expr-btn op-btn"
+            title="Logical {{ logic|upper }}"
+          >
+            {{ logic }}
+          </button>
+        </form>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-group mt-3 display-flex gap-20">
+      <a href="{{ url_for('index') }}" class="button button-outline">
+        <span class="material-symbols-rounded button-icon">refresh</span>
+        Restart
+      </a>
+      <form action="{{ url_for('evaluate') }}" method="post">
+        <button
+          type="submit"
+          name="action"
+          value="evaluate_expr"
+          class="button"
+        >
+          <span class="material-symbols-rounded button-icon">calculate</span>
+          Evaluate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  {% if history %}
+  <div class="card card-full">
+    <h3 class="card-title">History</h3>
+    <div class="history-list">
+      {% for item in history %}
+      <div class="history-item">{{ item }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="text-center mb-3 width-100">
+    <a
+      href="{{ url_for('export_pdf') }}"
+      class="button button-outline button-full"
+    >
+      <span class="material-symbols-rounded button-icon">download</span>
+      Export History
+    </a>
+  </div>
+</div>
+{% endblock %}
