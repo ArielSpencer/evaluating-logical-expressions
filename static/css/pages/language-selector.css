@@ -1,0 +1,35 @@
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 1rem;
+}
+
+.language-flag {
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  border: 2px solid transparent;
+}
+
+.language-flag.active {
+  opacity: 1;
+  border-color: var(--color-primary);
+}
+
+.language-flag:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.language-flag img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
