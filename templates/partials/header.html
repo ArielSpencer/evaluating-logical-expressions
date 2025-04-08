@@ -3,17 +3,30 @@
         <div class="header-brand">
             <a href="{{ url_for('index') }}" class="app-logo">
                 <h1 class="app-title">ExprEval</h1>
-                <p class="app-subtitle">{% block header_subtitle %}Evaluate expressions easily{% endblock %}</p>
+                <p class="app-subtitle">{% block header_subtitle %}{{ 'Evaluate expressions easily' | translate }}{% endblock %}</p>
             </a>
         </div>
-        <a href="https://arielspencer.com.br" target="_blank" class="user-profile-link">
-            <div class="user-profile">
-                <div class="avatar">S</div>
-                <div class="user-info">
-                    <div class="user-name">Spencer</div>
-                    <div class="user-level">Developer</div>
-                </div>
+        <div class="display-flex justify-between align-items-center">
+            <div class="language-selector">
+                <a href="{{ url_for('set_language', lang_code='en') }}" class="language-flag {% if g.language == 'en' %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='img/flags/english.png') }}" alt="English" title="English">
+                </a>
+                <a href="{{ url_for('set_language', lang_code='es') }}" class="language-flag {% if g.language == 'es' %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='img/flags/spanish.png') }}" alt="Español" title="Español">
+                </a>
+                <a href="{{ url_for('set_language', lang_code='pt') }}" class="language-flag {% if g.language == 'pt' %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='img/flags/brazilian-portuguese.png') }}" alt="Português" title="Português">
+                </a>
             </div>
-        </a>
+            <a href="https://arielspencer.com.br" target="_blank" class="user-profile-link">
+                <div class="user-profile">
+                    <div class="avatar">S</div>
+                    <div class="user-info">
+                        <div class="user-name">Spencer</div>
+                        <div class="user-level">Developer</div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </header>
