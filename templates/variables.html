@@ -1,16 +1,20 @@
-{% extends "base.html" %} {% block title %}Define Variables - Expression
-Evaluator{% endblock %} {% block header_subtitle %}Define your variables{%
-endblock %} {% block content %}
-<div class="step-indicator">STEP 2 OF 3</div>
-<h2 class="screen-title">Define Variables</h2>
+{% extends "base.html" %} 
+
+{% block title %}ExprEval - {{ 'Define Variables' | translate }}{% endblock %} 
+
+{% block header_subtitle %}{{ 'Define your variables' | translate }}{% endblock %} 
+
+{% block content %}
+<div class="step-indicator">{{ 'STEP 2 OF 3' | translate }}</div>
+<h2 class="screen-title">{{ 'Define Variables' | translate }}</h2>
 
 {% if error %}
-<div class="error-message">{{ error }}</div>
+<div class="error-message">{{ error | translate }}</div>
 {% endif %}
 
 <div class="card">
-    <h3 class="card-title">Enter Values</h3>
-    <p class="card-subtitle">Provide numerical values for each variable</p>
+    <h3 class="card-title">{{ 'Enter Values' | translate }}</h3>
+    <p class="card-subtitle">{{ 'Provide numerical values for each variable' | translate }}</p>
 
     <form action="{{ url_for('save_variables') }}" method="post">
         <div class="variable-container">
@@ -24,7 +28,7 @@ endblock %} {% block content %}
                 step="any"
                 id="var{{ i }}"
                 name="NUM{{ i }}"
-                placeholder="Enter a number"
+                placeholder="{{ 'Enter a number' | translate }}"
                 required
             />
             </div>
@@ -35,11 +39,11 @@ endblock %} {% block content %}
         <div class="button-actions">
             <a href="{{ url_for('index') }}" class="button button-outline">
                 <span class="material-symbols-rounded button-icon">arrow_back</span>
-                Back to Home
+                {{ 'Back to Home' | translate }}
             </a>
             <button type="submit" class="button button-primary">
                 <span class="material-symbols-rounded button-icon">arrow_forward</span>
-                Continue to Expression Builder
+                {{ 'Continue to Expression Builder' | translate }}
             </button>
         </div>
     </form>
