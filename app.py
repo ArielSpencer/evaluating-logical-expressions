@@ -313,11 +313,13 @@ def is_safe_expression(expr):
 
 
 if __name__ == "__main__":
-    print(f"Current working directory: {os.getcwd()}")
-    print(f"Looking for pdf_export.py in: {current_dir}")
-    print(f"Files in directory: {os.listdir(current_dir)}")
-
     export_dir = os.path.join(os.getcwd(), "static", "exports")
     os.makedirs(export_dir, exist_ok=True)
 
     app.run(debug=True)
+else:
+    export_dir = os.path.join(os.getcwd(), "static", "exports")
+    os.makedirs(export_dir, exist_ok=True)
+
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
