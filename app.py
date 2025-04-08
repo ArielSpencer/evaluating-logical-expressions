@@ -39,9 +39,36 @@ except ImportError:
         def clean_old_pdfs():
             pass
 
-from translations import get_translations
+def session_cleanup():
+    try:
+        session_path = os.path.join(os.getcwd(), "flask_session")
+        if os.path.exists(session_path):
+            print(f"Cleaning session directory: {session_path}")
+            for f in os.listdir(session_path):
+                try:
+                    os.remove(os.path.join(session_path, f))
+                except:
+                    pass
+    except Exception as e:
+        print(f"Could not clean sessions: {e}")
+
+session_cleanup()
 
 app = Flask(__name__)
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=1)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+app.jinja_env.cache = {}
+app.jinja_env.auto_reload = True
+
+from flask_session import Session
+Session(app)
+
 app.secret_key = os.environ.get(
     "SECRET_KEY", "your_default_secret_key_here"
 )
@@ -58,22 +85,110 @@ safe_globals = {
 @app.template_filter('translate')
 def translate_filter(text):
     language = g.get('language', 'en')
+
     if language == 'en':
         return text
+
+    translations = {}
     
-    translations = g.get('translations', {})
-    return translations.get(text, text)
+    if language == 'es':
+        try:
+            from translations.es import TRANSLATIONS
+            translations = TRANSLATIONS
+        except ImportError:
+            print(f"Failed to import Spanish translations")
+    elif language == 'pt-br':
+        try:
+            from translations.pt_br import TRANSLATIONS
+            translations = TRANSLATIONS
+        except ImportError:
+            print(f"Failed to import Portuguese translations")
+
+    translated = translations.get(text, text)
+    
+    return translated
+
+@app.context_processor
+def inject_translations():
+    es_translations = {}
+    pt_translations = {}
+
+    try:
+        from translations.es import TRANSLATIONS
+        es_translations = TRANSLATIONS
+    except ImportError:
+        print("Não foi possível carregar traduções espanholas")
+
+    try:
+        from translations.pt_br import TRANSLATIONS
+        pt_translations = TRANSLATIONS
+    except ImportError:
+        print("Não foi possível carregar traduções portuguesas")
+
+    def t(text):
+        language = g.get('language', 'en')
+        
+        if language == 'en':
+            return text
+        elif language == 'es':
+            return es_translations.get(text, text)
+        elif language == 'pt-br':
+            return pt_translations.get(text, text)
+        return text
+
+    return {
+        't': t,
+        'current_lang': g.get('language', 'en')
+    }
 
 @app.before_request
 def before_request():
     language = session.get('language', 'en')
     g.language = language
-    g.translations = get_translations(language)
+    g.now = datetime.datetime.now().timestamp()
+    print(f"Request: {request.path}, Language: {language}, Session ID: {id(session)}")
 
 @app.route("/set_language/<lang_code>")
 def set_language(lang_code):
-    session['language'] = lang_code
+    print(f"Changing language from {session.get('language', 'none')} to {lang_code}")
+    allowed_langs = ['en', 'es', 'pt-br']
+    if lang_code in allowed_langs:
+        if 'language' in session:
+            session.pop('language')
+        session['language'] = lang_code
+        session.modified = True
+        print(f"Language set to {lang_code}, session id: {session.sid if hasattr(session, 'sid') else 'N/A'}")
+    else:
+        print(f"Invalid language code: {lang_code}")
     return redirect(request.referrer or url_for('index'))
+
+@app.route("/test-translation")
+def test_translation():
+    html = "<h1>Teste de Traduções</h1>"
+
+    current_lang = g.get('language', 'en')
+    html += f"<p>Idioma atual: <strong>{current_lang}</strong></p>"
+
+    test_phrases = [
+        "Welcome to ExprEval",
+        "Build & evaluate expressions",
+        "Variables",
+        "Evaluate",
+        "History"
+    ]
+    
+    html += "<h2>Traduções:</h2><ul>"
+    for phrase in test_phrases:
+        translated = translate_filter(phrase)
+        html += f"<li>'{phrase}' → '{translated}'</li>"
+    html += "</ul>"
+
+    html += "<h2>Mudar idioma:</h2>"
+    html += f'<p><a href="{url_for("set_language", lang_code="en")}?t={g.now}">English</a></p>'
+    html += f'<p><a href="{url_for("set_language", lang_code="es")}?t={g.now}">Español</a></p>'
+    html += f'<p><a href="{url_for("set_language", lang_code="pt-br")}?t={g.now}">Português</a></p>'
+    
+    return html
 
 @app.route("/")
 def index():
@@ -81,7 +196,6 @@ def index():
     session.pop("history", None)
     session.pop("current_expression", None)
     return render_template("index.html")
-
 
 @app.route("/setup_variables", methods=["POST"])
 def setup_variables():
@@ -98,7 +212,6 @@ def setup_variables():
         return render_template("variables.html", var_count=var_count)
     except ValueError:
         return render_template("index.html", error="Please enter a valid number.")
-
 
 @app.route("/save_variables", methods=["POST"])
 def save_variables():
@@ -137,7 +250,6 @@ def save_variables():
         history=[var_summary],
         current_expression="",
     )
-
 
 @app.route("/export_pdf")
 def export_pdf():
@@ -178,7 +290,6 @@ def export_pdf():
             current_expression=session.get("current_expression", ""),
             error=f"Error generating export: {str(e)}",
         )
-
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
@@ -256,7 +367,6 @@ def evaluate():
         current_expression=current_expression,
     )
 
-
 def add_token_to_expression(current_expr, token):
     current_tokens = current_expr.split()
 
@@ -290,7 +400,6 @@ def add_token_to_expression(current_expr, token):
 
     return rebuilt_expr
 
-
 def handle_backspace(current_expr):
     if not current_expr:
         return ""
@@ -309,14 +418,12 @@ def handle_backspace(current_expr):
 
     return " ".join(tokens)
 
-
 def is_numeric(token):
     try:
         float(token)
         return True
     except ValueError:
         return False
-
 
 def is_safe_expression(expr):
     allowed_pattern = r"^[a-zA-Z0-9_\s\.\+\-\*\/\%\(\)\<\>\=\!\,\&\|]*$"
@@ -330,7 +437,6 @@ def is_safe_expression(expr):
             return False
 
     return True
-
 
 if __name__ == "__main__":
     export_dir = os.path.join(os.getcwd(), "static", "exports")

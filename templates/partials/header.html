@@ -1,20 +1,28 @@
 <header class="app-header">
     <div class="app-header-content">
         <div class="header-brand">
-            <a href="{{ url_for('index') }}" class="app-logo">
+            <a href="{{ url_for('index') }}?nocache={{ g.now|default(9999) }}" class="app-logo">
                 <h1 class="app-title">ExprEval</h1>
-                <p class="app-subtitle">{% block header_subtitle %}{{ 'Evaluate expressions easily' | translate }}{% endblock %}</p>
+                <p class="app-subtitle">
+                    {% if g.language == 'es' %}
+                        Evalúa expresiones fácilmente
+                    {% elif g.language == 'pt-br' %}
+                        Calcule expressões facilmente
+                    {% else %}
+                        Evaluate expressions easily
+                    {% endif %}
+                </p>
             </a>
         </div>
         <div class="display-flex justify-between align-items-center">
             <div class="language-selector">
-                <a href="{{ url_for('set_language', lang_code='en') }}" class="language-flag {% if g.language == 'en' %}active{% endif %}">
+                <a href="{{ url_for('set_language', lang_code='en') }}?nocache={{ g.now|default(9999) }}" class="language-flag {% if g.language == 'en' %}active{% endif %}">
                     <img src="{{ url_for('static', filename='img/flags/english.png') }}" alt="English" title="English">
                 </a>
-                <a href="{{ url_for('set_language', lang_code='es') }}" class="language-flag {% if g.language == 'es' %}active{% endif %}">
+                <a href="{{ url_for('set_language', lang_code='es') }}?nocache={{ g.now|default(9999) }}" class="language-flag {% if g.language == 'es' %}active{% endif %}">
                     <img src="{{ url_for('static', filename='img/flags/spanish.png') }}" alt="Español" title="Español">
                 </a>
-                <a href="{{ url_for('set_language', lang_code='pt-br') }}" class="language-flag {% if g.language == 'pt-br' %}active{% endif %}">
+                <a href="{{ url_for('set_language', lang_code='pt-br') }}?nocache={{ g.now|default(9999) }}" class="language-flag {% if g.language == 'pt-br' %}active{% endif %}">
                     <img src="{{ url_for('static', filename='img/flags/brazilian-portuguese.png') }}" alt="Português" title="Português">
                 </a>
             </div>

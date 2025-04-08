@@ -1,0 +1,47 @@
+.feature-list {
+  margin-bottom: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.feature-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.feature-content {
+  flex-grow: 1;
+}
+
+.feature-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.feature-description {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.code-example {
+  background-color: var(--bg-light);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  color: var(--text-dark);
+  border-left: 3px solid var(--color-primary);
+}

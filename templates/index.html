@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 
-{% block title %}ExprEval - Expression Evaluator{% endblock %}
+{% block title %}ExprEval - {{ t('Expression Evaluator') }}{% endblock %}
 
 {% block content %}
-<h2 class="screen-title">{{ 'Welcome to ExprEval' | translate }}</h2>
+<h2 class="screen-title">{{ t('Welcome to ExprEval') }}</h2>
 
 <div class="card-container">
     <div class="card">
-        <h3 class="card-title">{{ 'Create New Session' | translate }}</h3>
-        <p class="card-subtitle">{{ 'Select how many variables you need' | translate }}</p>
+        <h3 class="card-title">{{ t('Create New Session') }}</h3>
+        <p class="card-subtitle">{{ t('Select how many variables you need') }}</p>
         
         {% if error %}
-        <div class="error-message">{{ error | translate }}</div>
+        <div class="error-message">{{ t(error) }}</div>
         {% endif %}
         
         <form action="{{ url_for('setup_variables') }}" method="post">
             <div class="form-group display-flex flex-column">
-                <label for="var-count">{{ 'Number of variables (1-10)' | translate }}</label>
+                <label for="var-count">{{ t('Number of variables (1-10)') }}</label>
                 <input type="number" id="var-count" name="var_count" min="1" max="10" value="2" required>
                 <button type="submit" class="button button-full">
                     <span class="material-symbols-rounded button-icon">add_circle</span>
-                    {{ 'Create Variables' | translate }}
+                    {{ t('Create Variables') }}
                 </button>
             </div>
         </form>
     </div>
 
     <div class="card">
-        <h3 class="card-title">{{ 'How It Works' | translate }}</h3>
-        <div class="step-indicator">{{ 'SIMPLE STEPS' | translate }}</div>
+        <h3 class="card-title">{{ t('How It Works') }}</h3>
+        <div class="step-indicator">{{ t('SIMPLE STEPS') }}</div>
         
         <ol>
-            <li><strong>{{ 'Select the number of variables you need' | translate }}</strong></li>
-            <li><strong>{{ 'Define each variable with a numerical value' | translate }}</strong></li>
-            <li><strong>{{ 'Create your expression with the builder' | translate }}</strong></li>
-            <li><strong>{{ 'Evaluate and see the result' | translate }}</strong></li>
+            <li><strong>{{ t('Select the number of variables you need') }}</strong></li>
+            <li><strong>{{ t('Define each variable with a numerical value') }}</strong></li>
+            <li><strong>{{ t('Create your expression with the builder') }}</strong></li>
+            <li><strong>{{ t('Evaluate and see the result') }}</strong></li>
         </ol>
         
-        <h3 class="card-title mb-2">{{ 'Example Expressions' | translate }}</h3>
+        <h3 class="card-title mb-2">{{ t('Example Expressions') }}</h3>
         <ul>
             <li><code>NUM1 > NUM2</code> - Is NUM1 greater than NUM2?</li>
             <li><code>NUM1 + NUM2 == 10</code> - Does NUM1 plus NUM2 equal 10?</li>

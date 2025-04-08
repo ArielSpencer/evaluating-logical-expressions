@@ -1,20 +1,20 @@
 {% extends "base.html" %} 
 
-{% block title %}ExprEval - {{ 'Define Variables' | translate }}{% endblock %} 
+{% block title %}ExprEval - {{ t('Define Variables') }}{% endblock %} 
 
-{% block header_subtitle %}{{ 'Define your variables' | translate }}{% endblock %} 
+{% block header_subtitle %}{{ t('Define your variables') }}{% endblock %} 
 
 {% block content %}
-<div class="step-indicator">{{ 'STEP 2 OF 3' | translate }}</div>
-<h2 class="screen-title">{{ 'Define Variables' | translate }}</h2>
+<div class="step-indicator">{{ t('STEP 2 OF 3') }}</div>
+<h2 class="screen-title">{{ t('Define Variables') }}</h2>
 
 {% if error %}
-<div class="error-message">{{ error | translate }}</div>
+<div class="error-message">{{ t(error) }}</div>
 {% endif %}
 
 <div class="card">
-    <h3 class="card-title">{{ 'Enter Values' | translate }}</h3>
-    <p class="card-subtitle">{{ 'Provide numerical values for each variable' | translate }}</p>
+    <h3 class="card-title">{{ t('Enter Values') }}</h3>
+    <p class="card-subtitle">{{ t('Provide numerical values for each variable') }}</p>
 
     <form action="{{ url_for('save_variables') }}" method="post">
         <div class="variable-container">
@@ -28,7 +28,7 @@
                 step="any"
                 id="var{{ i }}"
                 name="NUM{{ i }}"
-                placeholder="{{ 'Enter a number' | translate }}"
+                placeholder="{{ t('Enter a number') }}"
                 required
             />
             </div>
@@ -37,13 +37,13 @@
     </div>
 
         <div class="button-actions">
-            <a href="{{ url_for('index') }}" class="button button-outline">
+            <a href="{{ url_for('index') }}?nocache={{ g.now|default(9999) }}" class="button button-outline">
                 <span class="material-symbols-rounded button-icon">arrow_back</span>
-                {{ 'Back to Home' | translate }}
+                {{ t('Back to Home') }}
             </a>
             <button type="submit" class="button button-primary">
                 <span class="material-symbols-rounded button-icon">arrow_forward</span>
-                {{ 'Continue to Expression Builder' | translate }}
+                {{ t('Continue to Expression Builder') }}
             </button>
         </div>
     </form>

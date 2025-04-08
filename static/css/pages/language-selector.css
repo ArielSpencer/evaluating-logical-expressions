@@ -33,3 +33,11 @@
   height: 100%;
   object-fit: cover;
 }
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}

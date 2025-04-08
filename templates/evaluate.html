@@ -1,15 +1,15 @@
 {% extends "base.html" %} 
 
-{% block title %}ExprEval - {{ 'Evaluate' | translate }}{% endblock %} 
+{% block title %}ExprEval - {{ t('Evaluate') }}{% endblock %} 
 
-{% block header_subtitle %}{{ 'Build & evaluate expressions' | translate }}{% endblock %} 
+{% block header_subtitle %}{{ t('Build & evaluate expressions') }}{% endblock %} 
 
 {% block content %}
-<div class="step-indicator">{{ 'STEP 3 OF 3' | translate }}</div>
-<h2 class="screen-title">{{ 'Expression Builder' | translate }}</h2>
+<div class="step-indicator">{{ t('STEP 3 OF 3') }}</div>
+<h2 class="screen-title">{{ t('Expression Builder') }}</h2>
 
 {% if error %}
-<div class="error-message">{{ error | translate }}</div>
+<div class="error-message">{{ t(error) }}</div>
 {% endif %}
 
 <div class="card-container">
@@ -20,7 +20,7 @@
         id="expression"
         name="expression"
         class="expression-input"
-        placeholder="{{ 'Use the buttons below' | translate }}"
+        placeholder="{{ t('Use the buttons below') }}"
         value="{{ current_expression or '' }}"
         readonly
       />
@@ -49,7 +49,7 @@
 
       {% if result is defined %}
       <div class="result-card">
-        <div class="result-title">{{ 'Result' | translate }}</div>
+        <div class="result-title">{{ t('Result') }}</div>
         <div class="result-expression">{{ expression }}</div>
         <div class="result {% if result_class %}{{ result_class }}{% endif %}">
           {{ result }}
@@ -61,7 +61,7 @@
 
   <div class="card">
     <div class="expression-section">
-      <h4 class="expression-section-title">{{ 'Variables' | translate }}</h4>
+      <h4 class="expression-section-title">{{ t('Variables') }}</h4>
       <div class="button-grid">
         {% for name, value in variables.items() %} {% if name == name.upper()
         and name.startswith('NUM') %}
@@ -82,7 +82,7 @@
     </div>
 
     <div class="expression-section">
-      <h4 class="expression-section-title">{{ 'Numbers' | translate }}</h4>
+      <h4 class="expression-section-title">{{ t('Numbers') }}</h4>
       <div class="button-grid">
         {% for num in ['1','2','3','4','5','6','7','8','9','0','.'] %}
         <form action="{{ url_for('evaluate') }}" method="post">
@@ -103,7 +103,7 @@
 
   <div class="card">
     <div class="expression-section">
-      <h4 class="expression-section-title">{{ 'Operators' | translate }}</h4>
+      <h4 class="expression-section-title">{{ t('Operators') }}</h4>
       <div class="button-grid">
         {% set ops = [ ('+', 'Addition operator'), ('-', 'Subtraction
         operator'), ('*', 'Multiplication operator'), ('/', 'Division
@@ -129,7 +129,7 @@
     </div>
 
     <div class="expression-section">
-      <h4 class="expression-section-title">{{ 'Logic' | translate }}</h4>
+      <h4 class="expression-section-title">{{ t('Logic') }}</h4>
       <div class="button-grid">
         {% for logic in ['and', 'or', 'not'] %}
         <form action="{{ url_for('evaluate') }}" method="post">
@@ -149,9 +149,9 @@
     </div>
 
     <div class="form-group mt-3 display-flex gap-20">
-      <a href="{{ url_for('index') }}" class="button button-outline">
+      <a href="{{ url_for('index') }}?nocache={{ g.now|default(9999) }}" class="button button-outline">
         <span class="material-symbols-rounded button-icon">refresh</span>
-        {{ 'Restart' | translate }}
+        {{ t('Restart') }}
       </a>
       <form action="{{ url_for('evaluate') }}" method="post">
         <button
@@ -161,7 +161,7 @@
           class="button"
         >
           <span class="material-symbols-rounded button-icon">calculate</span>
-          {{ 'Evaluate' | translate }}
+          {{ t('Evaluate') }}
         </button>
       </form>
     </div>
@@ -169,7 +169,7 @@
 
   {% if history %}
   <div class="card card-full">
-    <h3 class="card-title">{{ 'History' | translate }}</h3>
+    <h3 class="card-title">{{ t('History') }}</h3>
     <div class="history-list">
       {% for item in history %}
       <div class="history-item">{{ item }}</div>
@@ -184,7 +184,7 @@
       class="button button-outline button-full"
     >
       <span class="material-symbols-rounded button-icon">download</span>
-      {{ 'Export History' | translate }}
+      {{ t('Export History') }}
     </a>
   </div>
 </div>
