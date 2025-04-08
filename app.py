@@ -2,7 +2,7 @@ import re
 import os
 import sys
 import datetime
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, g
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
@@ -10,12 +10,10 @@ if current_dir not in sys.path:
 
 try:
     from pdf_export import create_history_pdf, clean_old_pdfs
-
     print("Using full PDF export functionality")
 except ImportError:
     try:
         from pdf_export_simple import create_history_pdf, clean_old_pdfs
-
         print("Using simplified export functionality (text file)")
     except ImportError:
         def create_history_pdf(history, variables, filename=None):
@@ -41,6 +39,8 @@ except ImportError:
         def clean_old_pdfs():
             pass
 
+from translations import get_translations
+
 app = Flask(__name__)
 app.secret_key = os.environ.get(
     "SECRET_KEY", "your_default_secret_key_here"
@@ -55,6 +55,25 @@ safe_globals = {
     "abs": abs,
 }
 
+@app.template_filter('translate')
+def translate_filter(text):
+    language = g.get('language', 'en')
+    if language == 'en':
+        return text
+    
+    translations = g.get('translations', {})
+    return translations.get(text, text)
+
+@app.before_request
+def before_request():
+    language = session.get('language', 'en')
+    g.language = language
+    g.translations = get_translations(language)
+
+@app.route("/set_language/<lang_code>")
+def set_language(lang_code):
+    session['language'] = lang_code
+    return redirect(request.referrer or url_for('index'))
 
 @app.route("/")
 def index():
@@ -70,9 +89,10 @@ def setup_variables():
         var_count = int(request.form.get("var_count", 2))
 
         if var_count < MIN_VARIABLES or var_count > MAX_VARIABLES:
+            error_msg = "Please enter between {0} and {1} variables.".format(MIN_VARIABLES, MAX_VARIABLES)
             return render_template(
                 "index.html",
-                error=f"Please enter between {MIN_VARIABLES} and {MAX_VARIABLES} variables.",
+                error=error_msg,
             )
 
         return render_template("variables.html", var_count=var_count)
